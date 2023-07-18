@@ -1,13 +1,7 @@
 const taskContainer = document.querySelector(".task__container");
-const saveChanges = () => {
-    const taskdata = {
-        id: `${Date.now()}`,
-        imageUrl:document.getElementById("imageurl").value ,
-        taskTitle:document.getElementById("tasktitle").value  ,
-        taskType:document.getElementById("tasktype").value  ,
-        taskDesription:document.getElementById("taskdescription").value  
-    };
-    const newCard = `
+const globalStore = [];
+
+const newCard = (taskdata) => `
     <div class="col-sm-12 col-md-6 col-lg-4 id=${taskdata.id}">
     <div class="card h-100">
       <div class="card-header d-flex justify-content-end">
@@ -25,5 +19,28 @@ const saveChanges = () => {
     </div>
   </div>
     `;
-    taskContainer.insertAdjacentHTML("beforeend", newCard);
+
+const loadInitialCardData = () => {
+  const getData = localStorage.getItem("taskm");
+
+  const {cards} = JSON.parse(getData);
+  cards.map((Cobj) => {
+    taskContainer.insertAdjacentHTML("beforeend", newCard(Cobj));
+    globalStore.push(Cobj);
+  })
+}
+
+const saveChanges = () => {
+    const taskdata = {
+        id: `${Date.now()}`,
+        imageUrl:document.getElementById("imageurl").value ,
+        taskTitle:document.getElementById("tasktitle").value  ,
+        taskType:document.getElementById("tasktype").value  ,
+        taskDesription:document.getElementById("taskdescription").value  
+    };
+    
+    taskContainer.insertAdjacentHTML("beforeend", newCard(taskdata));
+    //newCard(taskdata);
+    globalStore.push(taskdata);
+    localStorage.setItem("taskm", JSON.stringify({cards:globalStore}));
 };
